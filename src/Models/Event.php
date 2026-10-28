@@ -49,7 +49,7 @@ class Event extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
         ->setReactComponent('InputUserSelect')
         ->setReadonly(!$canManageEvents)
       ,
-      'id_car' => (new Lookup($this, $this->translate('Car'), Car::class, 'CASCADE'))->setDefaultVisible(),
+      'id_car' => (new Lookup($this, $this->translate('Car'), Car::class, 'RESTRICT'))->setDefaultVisible(),
       'is_executed' => (new Boolean($this, $this->translate('Executed')))->setDefaultValue(false)->setDefaultVisible(),
       'note' => (new Varchar($this, $this->translate('Workplace (note)')))->setDefaultVisible(),
       'is_public' => (new Boolean($this, $this->translate('For all')))
