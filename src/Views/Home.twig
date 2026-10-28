@@ -1,0 +1,19 @@
+{% set buttons = [
+  ['hlthcr-events/events', 'fas fa-calendar-check', translate('Events')],
+  [viewParams.carBookingsUrl, 'fas fa-car', translate('Car bookings')],
+  ['calendar', 'fas fa-calendar-days', translate('Calendar')],
+] %}
+
+<div class="flex gap-2 flex-wrap flex-col m-auto card mt-24">
+  <div class="card-header">
+    <h1 class="app-main-title">{{ translate('Events') }}</h1>
+  </div>
+  <div class="card-body gap-2 flex-wrap grid md:grid-cols-3">
+    {% for button in buttons %}
+      <a href="{{ config.projectUrl }}/{{ button[0] }}" class="btn btn-square btn-large btn-transparent">
+        <span class="icon"><i class="{{ button[1] }}"></i></span>
+        <span class="text">{{ button[2] }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</div>

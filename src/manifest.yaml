@@ -1,0 +1,13 @@
+namespace: Hubleto\App\External\WaiBlue\HlthcrEvents
+appType: external
+sidebarGroup: custom
+rootUrlSlug: hlthcr-events
+name: Events
+icon: fas fa-calendar-check
+author:
+  name: "Hlthcr"
+  nick: "hlthcr"
+highlight: Shared events with attendees and car bookings, shown in the Hubleto calendar.
+requires:
+  - Hubleto\App\Community\Calendar
+  - Hubleto\App\External\WaiBlue\HlthcrCore

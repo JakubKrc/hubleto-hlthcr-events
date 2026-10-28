@@ -1,0 +1,58 @@
+{
+    "manifest": {
+        "Events": "Udalosti",
+        "Shared events with attendees and car bookings, shown in the Hubleto calendar.": "Spoločné udalosti s účastníkmi a plánovanie áut, zobrazené v kalendári.",
+        "Car bookings": "Plánovanie vozidiel",
+        "Calendar": "Kalendár",
+        "Settings": "Nastavenia"
+    },
+    "Models\\Event": {
+        "Event name": "Názov udalosti",
+        "All-day event": "Celodenná udalosť",
+        "Only the dates are used. An event with a time is never all-day.": "Použijú sa iba dátumy. Udalosť s časom nie je celodenná.",
+        "User": "Používateľ",
+        "Car": "Auto",
+        "Executed": "Vykonaná",
+        "Workplace (note)": "Pracovisko (poznámka)",
+        "For all": "Pre všetkých",
+        "Attendees": "Účastníci",
+        "Book the car": "Naplánovať vozidlo",
+        "Add event": "Pridať udalosť",
+        "Type": "Typ",
+        "All": "Všetky",
+        "Events": "Udalosti",
+        "Car bookings": "Plánovanie vozidiel",
+        "Only administrators and managers can change events for all.": "Udalosti pre všetkých môže meniť iba administrátor alebo manažér.",
+        "The event cannot end before it starts.": "Udalosť nemôže skončiť skôr ako začne.",
+        "Start date": "Začiatok udalosti",
+        "Start time": "Čas začiatku",
+        "End date": "Koniec udalosti",
+        "End time": "Čas konca"
+    },
+    "Controllers\\Home": {
+        "Events": "Udalosti",
+        "Car bookings": "Plánovanie vozidiel",
+        "Calendar": "Kalendár"
+    },
+    "Calendar": {
+        "Events": "Udalosti",
+        "Cars": "Autá"
+    },
+    "Components\\FormEvent": {
+        "Event": "Udalosť",
+        "Only administrators and managers can change events for all.": "Udalosti pre všetkých môže meniť iba administrátor alebo manažér."
+    },
+    "Components\\InputAttendees": {
+        "Attendees": "Účastníci"
+    },
+    "Loader": {
+        "Car bookings": "Plánovanie vozidiel",
+        "Save the car first.": "Najprv uložte auto."
+    },
+    "Controllers\\Settings": {
+        "Events": "Udalosti",
+        "Settings": "Nastavenia",
+        "Events with a car are car bookings. Cars are a code list of the Code lists app.": "Udalosti s autom sú rezervácie vozidiel. Autá sú číselník aplikácie Číselníky.",
+        "Cars": "Autá"
+    }
+}
