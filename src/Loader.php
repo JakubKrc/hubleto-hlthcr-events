@@ -85,7 +85,7 @@ class Loader extends \Hubleto\App\External\WaiBlue\HlthcrCore\HlthcrApp
    * Demo events and car bookings in the current week (FAKE data).
    * Records are inserted directly: the model rules use the logged-in user, and there is none on the command line.
    */
-  public function generateDemoData(): void
+  public function generateHlthcrDemoData(): void
   {
     /** @var Models\Event */
     $mEvent = $this->getModel(Models\Event::class);
