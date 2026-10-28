@@ -58,7 +58,7 @@ class Event extends \Hubleto\Erp\RecordManager
     return $query->where(function ($visibleEvents) use ($idUser, $seesPublicEvents) {
       $visibleEvents->whereNotNull($this->table . '.id_car');
       $visibleEvents->orWhere($this->table . '.id_user', $idUser);
-      $visibleEvents->orWhereRaw('JSON_CONTAINS(' . $this->table . '.attendee_user_ids, ?)', [(string) $idUser]);
+      $visibleEvents->orWhereIn($this->table . '.id', $this->idsOfEventsAttendedBy($idUser));
       if ($seesPublicEvents) {
         $visibleEvents->orWhere($this->table . '.is_public', 1);
       }
@@ -70,8 +70,15 @@ class Event extends \Hubleto\Erp\RecordManager
   {
     return $query->where(function ($eventsOfUser) use ($idUser) {
       $eventsOfUser->where($this->table . '.id_user', $idUser);
-      $eventsOfUser->orWhereRaw('JSON_CONTAINS(' . $this->table . '.attendee_user_ids, ?)', [(string) $idUser]);
+      $eventsOfUser->orWhereIn($this->table . '.id', $this->idsOfEventsAttendedBy($idUser));
     });
+  }
+
+  private function idsOfEventsAttendedBy(int $idUser): \Closure
+  {
+    return function ($attendedEventIds) use ($idUser) {
+      $attendedEventIds->select('id_event')->from('hlthcr_event_has_users')->where('id_user', $idUser);
+    };
   }
 
   public function addUrlFiltersToQuery(mixed $query): mixed

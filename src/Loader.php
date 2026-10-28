@@ -34,6 +34,7 @@ class Loader extends \Hubleto\App\External\WaiBlue\HlthcrCore\HlthcrApp
 
     if ($round == 1) {
       $this->getModel(Models\Event::class)->upgradeSchema();
+      $this->getModel(Models\EventHasUser::class)->upgradeSchema();
       // "php hubleto app install" runs only round 1, so foreign keys are created here too (Hubleto skips them later).
       $this->installForeignKeys();
     }
@@ -116,7 +117,7 @@ class Loader extends \Hubleto\App\External\WaiBlue\HlthcrCore\HlthcrApp
         'date_end' => $tuesday,
         'time_end' => '12:00:00',
         'id_user' => $demoUserIds['hygienist-1'],
-        'attendee_user_ids' => json_encode([$demoUserIds['nurse']]),
+        'attendees' => [$demoUserIds['nurse']],
         'note' => 'Demo Stavby s.r.o.',
       ],
       [
@@ -141,8 +142,13 @@ class Loader extends \Hubleto\App\External\WaiBlue\HlthcrCore\HlthcrApp
       ];
     }
 
+    /** @var Models\EventHasUser */
+    $mEventHasUser = $this->getModel(Models\EventHasUser::class);
     foreach ($demoEvents as $demoEvent) {
-      $mEvent->record->create($demoEvent);
+      $attendeeUserIds = $demoEvent['attendees'] ?? [];
+      unset($demoEvent['attendees']);
+      $idEvent = (int) $mEvent->record->create($demoEvent)->id;
+      $mEventHasUser->saveAttendees($idEvent, $attendeeUserIds);
     }
   }
 }

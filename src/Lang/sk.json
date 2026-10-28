@@ -54,5 +54,9 @@
         "Settings": "Nastavenia",
         "Events with a car are car bookings. Cars are a code list of the Code lists app.": "Udalosti s autom sú rezervácie vozidiel. Autá sú číselník aplikácie Číselníky.",
         "Cars": "Autá"
+    },
+    "Models\\EventHasUser": {
+        "Event": "Udalosť",
+        "User": "Používateľ"
     }
 }

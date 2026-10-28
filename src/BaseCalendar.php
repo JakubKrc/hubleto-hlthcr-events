@@ -60,8 +60,11 @@ abstract class BaseCalendar extends \Hubleto\App\Community\Calendar\Calendar
       // An all-day event ends at the end of its last day (the calendar expects the next day).
       $end = date('Y-m-d', strtotime($event['date_end'] . ' +1 day'));
     } else {
-      $start .= ' ' . ($event['time_start'] ?? '00:00:00');
-      $end .= ' ' . ($event['time_end'] ?? '00:00:00');
+      $timeStart = (string) ($event['time_start'] ?? '');
+      $timeEnd = (string) ($event['time_end'] ?? '');
+      // Without an end time the event lasts until the end of its last day, as the event form checks it.
+      $start .= ' ' . ($timeStart == '' ? '00:00:00' : $timeStart);
+      $end .= ' ' . ($timeEnd == '' ? '23:59:59' : $timeEnd);
     }
 
     return [

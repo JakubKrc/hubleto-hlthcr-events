@@ -7,10 +7,10 @@ use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Car;
 use Hubleto\App\External\WaiBlue\HlthcrEvents\Services\EventAccess;
 use Hubleto\Framework\Db\Column\Boolean;
 use Hubleto\Framework\Db\Column\Date;
-use Hubleto\Framework\Db\Column\Json;
 use Hubleto\Framework\Db\Column\Lookup;
 use Hubleto\Framework\Db\Column\Time;
 use Hubleto\Framework\Db\Column\Varchar;
+use Hubleto\Framework\Db\Column\Virtual;
 
 /**
  * Calendar event (legacy "Udalosť"). With a car it is a car booking (legacy "Naplánovať vozidlo").
@@ -57,8 +57,11 @@ class Event extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
         ->setDefaultVisible()
         ->setReadonly(!$canManageEvents)
       ,
-      // JSON list of user ids, edited with checkboxes (legacy table events_attendance).
-      'attendee_user_ids' => (new Json($this, $this->translate('Attendees')))->setReadonly(!$canManageEvents),
+      // JSON list of user ids, edited with checkboxes and stored in EventHasUser (legacy table events_attendance).
+      'attendee_user_ids' => (new Virtual($this, $this->translate('Attendees')))
+        ->setProperty('sql', EventHasUser::getAttendeeIdsSql('hlthcr_events.id'))
+        ->setReadonly(!$canManageEvents)
+      ,
     ]);
   }
 
@@ -127,10 +130,34 @@ class Event extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
       }
       $record['id_user'] = $originalEvent->id_user;
       $record['is_public'] = false;
-      $record['attendee_user_ids'] = $originalEvent->attendee_user_ids;
+      // The attendees stay as they are.
+      unset($record['attendee_user_ids']);
     }
 
     return $this->normalizeEvent($record);
+  }
+
+  public function onAfterCreate(array $savedRecord): array
+  {
+    $savedRecord = parent::onAfterCreate($savedRecord);
+    return $this->saveAttendees($savedRecord);
+  }
+
+  public function onAfterUpdate(array $originalRecord, array $savedRecord): array
+  {
+    $savedRecord = parent::onAfterUpdate($originalRecord, $savedRecord);
+    return $this->saveAttendees($savedRecord);
+  }
+
+  // Attendees are saved only when the record brings them (a partial save keeps them).
+  private function saveAttendees(array $savedRecord): array
+  {
+    if (!array_key_exists('attendee_user_ids', $savedRecord)) return $savedRecord;
+
+    $attendeeUserIds = $this->getAttendeeUserIds($savedRecord);
+    $this->getModel(EventHasUser::class)->saveAttendees((int) $savedRecord['id'], $attendeeUserIds);
+    $savedRecord['attendee_user_ids'] = json_encode($attendeeUserIds);
+    return $savedRecord;
   }
 
   public function onBeforeDelete(int $id): int
@@ -163,8 +190,6 @@ class Event extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
 
     $hasTime = ($timeStart != '' && $timeStart != '00:00:00') || ($timeEnd != '' && $timeEnd != '00:00:00');
     if ($hasTime) $record['is_all_day'] = false;
-
-    $record['attendee_user_ids'] = json_encode($this->getAttendeeUserIds($record));
 
     return $record;
   }
