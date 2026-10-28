@@ -1,6 +1,6 @@
 {
     "name": "wai-blue/hubleto-hlthcr-events",
-    "license": "MIT",
+    "license": "proprietary",
     "description": "Hlthcr for Hubleto: Events with attendees and car bookings, calendars",
     "require": {
         "wai-blue/hubleto-hlthcr-core": "dev-main"
