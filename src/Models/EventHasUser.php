@@ -14,7 +14,7 @@ class EventHasUser extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\Hlthc
   public string $table = 'hlthcr_event_has_users';
   public string $recordManagerClass = RecordManagers\EventHasUser::class;
   public ?string $lookupSqlValue = '(select concat(first_name, " ", last_name) from users where users.id = {%TABLE%}.id_user)';
-  public ?string $lookupUrlDetail = 'hlthcr-events/events/{%ID%}';
+  public ?string $lookupUrlDetail = 'hlthcr-events/event-has-users/{%ID%}';
 
   public array $relations = [
     'EVENT' => [ self::BELONGS_TO, Event::class, 'id_event', 'id' ],
@@ -36,10 +36,19 @@ class EventHasUser extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\Hlthc
       from hlthcr_event_has_users ehu where ehu.id_event = ' . $eventIdColumn;
   }
 
+  // Only active users of the service can attend (one legacy app lists them); other ids are left out.
   public function saveAttendees(int $idEvent, array $attendeeUserIds): void
   {
+    $activeAttendeeIds = $this->getModel(User::class)->record
+      ->whereIn('id', $attendeeUserIds)
+      ->where('is_active', 1)
+      ->where('type', '<>', User::TYPE_EXTERNAL)
+      ->pluck('id')
+      ->toArray()
+    ;
+
     $this->record->where('id_event', $idEvent)->delete();
-    foreach ($attendeeUserIds as $idUser) {
+    foreach ($activeAttendeeIds as $idUser) {
       $this->record->create(['id_event' => $idEvent, 'id_user' => $idUser]);
     }
   }

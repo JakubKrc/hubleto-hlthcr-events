@@ -27,7 +27,8 @@
         "Start date": "Začiatok udalosti",
         "Start time": "Čas začiatku",
         "End date": "Koniec udalosti",
-        "End time": "Čas konca"
+        "End time": "Čas konca",
+        "The chosen user does not exist.": "Zvolený používateľ neexistuje."
     },
     "Controllers\\Home": {
         "Events": "Udalosti",
@@ -58,5 +59,8 @@
     "Models\\EventHasUser": {
         "Event": "Udalosť",
         "User": "Používateľ"
+    },
+    "Components\\FormEventHasUser": {
+        "Attendee of the event": "Účastník udalosti"
     }
 }

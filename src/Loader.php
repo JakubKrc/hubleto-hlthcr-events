@@ -21,6 +21,7 @@ class Loader extends \Hubleto\App\External\WaiBlue\HlthcrCore\HlthcrApp
       '/^hlthcr-events\/settings\/?$/' => Controllers\Settings::class,
     ]);
     $this->router()->crud('hlthcr-events/events', Controllers\Events::class);
+    $this->router()->crud('hlthcr-events/event-has-users', Controllers\EventHasUsers::class);
 
     /** @var \Hubleto\App\Community\Calendar\Manager $calendarManager */
     $calendarManager = $this->getService(\Hubleto\App\Community\Calendar\Manager::class);

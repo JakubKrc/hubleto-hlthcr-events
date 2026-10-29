@@ -4,6 +4,7 @@ import Translator from '@hubleto/react-ui/core/Translator';
 import FormCustomizer from '@hubleto/react-ui/core/FormCustomizer';
 import { type FormMeta } from '@hubleto/react-ui/components/fc/FormInterfaces';
 import TableEvents from './Components/FC/TableEvents'
+import TableEventHasUsers from './Components/FC/TableEventHasUsers'
 
 const parentApp = 'Hubleto/App/External/WaiBlue/HlthcrEvents';
 const T = new Translator(parentApp + '/Loader', 'Loader');
@@ -29,6 +30,7 @@ class HlthcrEventsApp extends App {
   init() {
     super.init();
     globalThis.hubleto.registerReactComponent('HlthcrEventsTableEvents', TableEvents);
+    globalThis.hubleto.registerReactComponent('HlthcrEventsTableEventHasUsers', TableEventHasUsers);
     FormCustomizer.addTab('FormCar', 'hlthcr-car-bookings', mountCarBookingsTab);
   }
 }

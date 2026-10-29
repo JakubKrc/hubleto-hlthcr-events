@@ -4,6 +4,8 @@ namespace Hubleto\App\External\WaiBlue\HlthcrEvents\Models;
 
 use Hubleto\App\Community\Auth\Models\User;
 use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Car;
+use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Traits\RefusesUnknownUser;
+use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Traits\UsesStoredValues;
 use Hubleto\App\External\WaiBlue\HlthcrEvents\Services\EventAccess;
 use Hubleto\Framework\Db\Column\Boolean;
 use Hubleto\Framework\Db\Column\Date;
@@ -19,6 +21,9 @@ use Hubleto\Framework\Db\Column\Virtual;
  */
 class Event extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
 {
+  use RefusesUnknownUser;
+  use UsesStoredValues;
+
   public string $table = 'hlthcr_events';
   public string $recordManagerClass = RecordManagers\Event::class;
   public ?string $lookupSqlValue = '{%TABLE%}.name';
@@ -122,6 +127,8 @@ class Event extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
   public function onBeforeUpdate(array $record): array
   {
     $record = parent::onBeforeUpdate($record);
+    // A save that leaves out a yes/no or number column would store 0 for it (Hubleto), so the stored value is used.
+    $record = $this->addStoredValuesOfMissingColumns($record, ['is_public', 'is_all_day', 'is_executed', 'time_start', 'time_end']);
 
     $originalEvent = $this->record->where('id', (int) $record['id'])->first();
     if ($originalEvent && !$this->eventAccess()->canManageEvents()) {
@@ -178,6 +185,8 @@ class Event extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
    */
   private function normalizeEvent(array $record): array
   {
+    $this->refuseUnknownUser($record, 'id_user');
+
     $timeStart = (string) ($record['time_start'] ?? '');
     $timeEnd = (string) ($record['time_end'] ?? '');
     // An end day without a time lasts until the end of that day.

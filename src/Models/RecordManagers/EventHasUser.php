@@ -45,7 +45,13 @@ class EventHasUser extends \Hubleto\Erp\RecordManager
 
   public function addUrlFiltersToQuery(mixed $query): mixed
   {
-    return parent::addUrlFiltersToQuery($query);
+    $query = parent::addUrlFiltersToQuery($query);
+
+    $idEvent = \Hubleto\Erp\Loader::getGlobalApp()->router()->urlParamAsInteger('idEvent');
+    if ($idEvent > 0) {
+      $query = $query->where($this->table . '.id_event', $idEvent);
+    }
+    return $query;
   }
 
   public function prepareLookupData(array $dataRaw): array
