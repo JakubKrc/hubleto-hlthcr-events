@@ -101,6 +101,18 @@ class Event extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
     return $description;
   }
 
+  // Events "for all" are changed only by administrators and managers, so their form offers no save or delete to others.
+  public function getPermissions(array $record): array
+  {
+    $permissions = parent::getPermissions($record);
+    $isEventForAll = (bool) ($record['is_public'] ?? false);
+    if ($isEventForAll && !$this->eventAccess()->canManageEvents()) {
+      $permissions[2] = false;
+      $permissions[3] = false;
+    }
+    return $permissions;
+  }
+
   public function getRelationsIncludedInLoadTableData(): array|null
   {
     return ['USER', 'CAR'];
