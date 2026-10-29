@@ -65,12 +65,13 @@ class Event extends \Hubleto\Erp\RecordManager
     });
   }
 
-  // Events of one user: own events and events the user attends.
+  // Events of one user: own events, events the user attends and events "for all" (both legacy calendars).
   public function filterByUser(mixed $query, int $idUser): mixed
   {
     return $query->where(function ($eventsOfUser) use ($idUser) {
       $eventsOfUser->where($this->table . '.id_user', $idUser);
       $eventsOfUser->orWhereIn($this->table . '.id', $this->idsOfEventsAttendedBy($idUser));
+      $eventsOfUser->orWhere($this->table . '.is_public', 1);
     });
   }
 

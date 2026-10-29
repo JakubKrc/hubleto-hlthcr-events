@@ -23,7 +23,7 @@ abstract class BaseCalendar extends \Hubleto\App\Community\Calendar\Calendar
   }
 
   /**
-   * Visible events overlapping the given period. $filter comes from the calendar ("my events", user).
+   * Visible events overlapping the given period. $filter comes from the calendar ("my events", user, done).
    */
   protected function loadEventsInPeriod(string $dateStart, string $dateEnd, array $filter, bool $carBookings): array
   {
@@ -46,6 +46,11 @@ abstract class BaseCalendar extends \Hubleto\App\Community\Calendar\Calendar
     if ($idSelectedUser > 0) {
       $query = $mEvent->record->filterByUser($query, $idSelectedUser);
     }
+
+    // Hubleto's calendar filter "not done" is 1, "done" is 2 (its reminders ask for "not done").
+    $completedFilter = (int) ($filter['fCompleted'] ?? 0);
+    if ($completedFilter == 1) $query = $query->where('hlthcr_events.is_executed', 0);
+    if ($completedFilter == 2) $query = $query->where('hlthcr_events.is_executed', 1);
 
     return $query->get()->toArray();
   }
